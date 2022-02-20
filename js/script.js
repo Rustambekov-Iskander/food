@@ -145,7 +145,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const modalTimerId = setTimeout( e => {
             openModal();
-        }, 5000);
+        }, 10000);
+
+
+        function openModalByScroll(){
+            const scrl = window.scrollY+1 >= document.documentElement.
+            scrollHeight - document.documentElement.clientHeight;
+
+            if ( scrl ){
+                openModal();
+                window.removeEventListener('scroll', openModalByScroll);
+            }
+        }
+        window.addEventListener('scroll', openModalByScroll);
 
         // modal end
 
