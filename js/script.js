@@ -161,6 +161,69 @@ window.addEventListener('DOMContentLoaded', () => {
 
         // modal end
 
+        // classes for menu
+
+        class AddMenuForDay {
+
+            constructor(src, alt, title, descr, price, selector){
+                this.src = src;
+                this.alt = alt;
+                this.title = title;
+                this.descr = descr;
+                this.price = price;
+                this.selector = document.querySelector(selector);
+            }
+
+            addMenu(){
+                let div = document.createElement('div');
+                div.innerHTML = `
+<div class="menu__item">
+    <img src="${this.src}" alt="${this.alt}">
+    <h3 class="menu__item-subtitle">Меню “${this.title}”</h3>
+    <div class="menu__item-descr">${this.descr}</div>
+    <div class="menu__item-divider"></div>
+    <div class="menu__item-price">
+        <div class="menu__item-cost">Цена:</div>
+        <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+    </div>
+</div>
+                `;
+                this.selector.append(div);
+            }
+        }
+
+        let descrForMenu = `В меню мы используем не только 
+        красивый дизайн упаковки, но и качественное исполнение блюд. 
+        Красная рыба, морепродукты, фрукты - ресторанное меню без 
+        похода в ресторан!`;
+
+        new AddMenuForDay(
+            'img/tabs/elite.jpg',
+            'elite', 
+            'Премиум', 
+            descrForMenu, 
+            990,
+            '.menu__field .container'
+            ).addMenu();
+
+        new AddMenuForDay(
+            'img/tabs/vegy.jpg',
+            'vegy', 
+            'Веганское', 
+            descrForMenu, 
+            990,
+            '.menu__field .container'
+            ).addMenu();
+
+        new AddMenuForDay(
+            'img/tabs/post.jpg',
+            'post', 
+            'Постное', 
+            descrForMenu, 
+            990,
+            '.menu__field .container'
+            ).addMenu();
+
 
 
 });
