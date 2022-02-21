@@ -99,13 +99,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
         // modal
         const modal = document.querySelector('.modal'),
-              btnOpenModal = document.querySelectorAll('[data-modal]'),
-              btnCloseModal = document.querySelector('[data-modal-close]');
-
-
+              btnOpenModal = document.querySelectorAll('[data-modal]');
 
         function openModal(){
-            modal.classList.toggle('show');
+            modal.classList.add('show');
             document.body.style.overflow = 'hidden';
             clearInterval(modalTimerId);
         }
@@ -116,36 +113,34 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        function closeModal(btn, modal){
+        function removeModal(){
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
 
-            function closeModalToggle(){
-                modal.classList.toggle('show');
-                document.body.style.overflow = '';
-            }
+        }
 
-            btn.addEventListener('click', e => {
-                closeModalToggle();
-            });
+        function closeModal(modal){
 
             modal.addEventListener('click', e => {
-                if ( e.target === modal ){
-                    closeModalToggle();
+                const cond = e.target.getAttribute('data-modal-close') == '';
+                if ( e.target === modal || cond ){
+                    removeModal();
                 }
             });
 
             document.addEventListener('keyup', e => {
                 if ( e.code === 'Escape' && modal.classList.contains('show')){
-                    closeModalToggle();
+                    removeModal();
                 }
             });
 
         }
         
-        closeModal(btnCloseModal, modal);
+        closeModal(modal);
 
         const modalTimerId = setTimeout( e => {
             openModal();
-        }, 10000);
+        }, 50000);
 
 
         function openModalByScroll(){
@@ -162,7 +157,6 @@ window.addEventListener('DOMContentLoaded', () => {
         // modal end
 
         // classes for menu
-
         class AddMenuForDay {
 
             constructor(src, alt, title, descr, price, selector){
@@ -224,6 +218,89 @@ window.addEventListener('DOMContentLoaded', () => {
             '.menu__field .container'
             ).addMenu();
 
+        // end classes for menu
+
+        // forms with db
+        const forms = document.querySelectorAll('form');
+
+        const message = {
+            loading: 'img/form/spinner.svg',
+            succes: 'Спасибо! Мы с вами скоро свяжемся',
+            failure: 'Что-то пошло не так'
+        };
+
+        forms.forEach(form => {
+            postData(form);
+        });
+
+        function postData(form){
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const statusMessage = document.createElement('img');
+                statusMessage.src = message.loading;
+                statusMessage.style.cssText = `
+                    display: block;
+                    margin: 0 auto;
+                `;
+                form.insertAdjacentElement('afterend', statusMessage);
 
 
+                const request = new XMLHttpRequest();
+                request.open('POST', 'server.php');
+
+                request.setRequestHeader('Content-type', 'application/json');
+                const formData = new FormData(form);
+
+                const object = {};
+                formData.forEach(function(value, key){
+                    object[key] = value;
+                });
+
+                const json = JSON.stringify(object);
+
+                request.send(json);
+
+                request.addEventListener('load', () => {
+                    if (request.status === 200){
+                        console.log(request.response);
+                        statusMessage.remove();
+                        form.reset();
+                        showThnxModal(message.succes);
+                        
+
+                       
+                    }else{
+                        showThnxModal(message.failure);
+                    }
+                });
+            });
+        }
+
+        function showThnxModal(message){
+            const prevModalDialog = document.querySelector('.modal__dialog');
+
+            prevModalDialog.classList.add('hide');
+            openModal();
+
+            const thnxModal = document.createElement('div');
+            thnxModal.classList.add('modal__dialog');
+            thnxModal.innerHTML = `
+            <div class="modal__content">
+                <div class="modal__close data-modal-close" data></div>
+                <div class="modal__title">${message}</div>
+            </div>
+            `;
+            document.querySelector('.modal').append(thnxModal);
+            setTimeout(() => {
+                thnxModal.remove();
+                prevModalDialog.classList.add('show');
+                prevModalDialog.classList.remove('hide');
+                removeModal();
+            }, 3000);
+
+        }
+        // forms with db end
+
+        
 });
