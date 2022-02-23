@@ -178,7 +178,7 @@ window.addEventListener('DOMContentLoaded', () => {
     <div class="menu__item-divider"></div>
     <div class="menu__item-price">
         <div class="menu__item-cost">Цена:</div>
-        <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+        <div class="menu__item-total"><span>${this.price}</span> $/день</div>
     </div>
 </div>
                 `;
@@ -191,32 +191,25 @@ window.addEventListener('DOMContentLoaded', () => {
         Красная рыба, морепродукты, фрукты - ресторанное меню без 
         похода в ресторан!`;
 
-        new AddMenuForDay(
-            'img/tabs/elite.jpg',
-            'elite', 
-            'Премиум', 
-            descrForMenu, 
-            990,
-            '.menu__field .container'
-            ).addMenu();
+        const getResource = async (url) => {
+            const res = await fetch(url);
 
-        new AddMenuForDay(
-            'img/tabs/vegy.jpg',
-            'vegy', 
-            'Веганское', 
-            descrForMenu, 
-            990,
-            '.menu__field .container'
-            ).addMenu();
+            if ( !res.ok ){
+                throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+            }
 
-        new AddMenuForDay(
-            'img/tabs/post.jpg',
-            'post', 
-            'Постное', 
-            descrForMenu, 
-            990,
-            '.menu__field .container'
-            ).addMenu();
+            return await res.json();
+        };
+
+        getResource('http://localhost:3000/menu')
+            .then(data => {
+                data.forEach( ({img, altimg, title, descr, price}) => {
+                    new AddMenuForDay(img, altimg, title, descr, price, '.menu .container').addMenu();
+
+                });
+            });
+
+    
 
         // end classes for menu
 
@@ -230,10 +223,22 @@ window.addEventListener('DOMContentLoaded', () => {
         };
 
         forms.forEach(form => {
-            postData(form);
+            bindPostData(form);
         });
 
-        function postData(form){
+        const postData = async (url, data) => {
+            const res = await fetch(url, {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: data     
+            });
+
+            return await res.json();
+        };
+
+        function bindPostData(form){
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
 
@@ -248,18 +253,10 @@ window.addEventListener('DOMContentLoaded', () => {
             
                 const formData = new FormData(form);
 
-                const object = {};
-                formData.forEach(function(value, key){
-                    object[key] = value;
-                });
+                const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-                fetch('server.php', {
-                    method: "POST",
-                    headers: {
-                        'Content-type': 'application/json'
-                    },
-                    body: JSON.stringify(object)
-                }).then(data => data.text())
+
+                postData('http://localhost:3000/requests', json)
                 .then(data => {
                     console.log(data);
                     statusMessage.remove();
@@ -296,7 +293,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }, 3000);
 
         }
-        // forms with db end
+
 
         
 });
