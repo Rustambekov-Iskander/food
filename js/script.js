@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
         // Timer
-        const deadline = '2022-06-24';
+        const deadline = '2022-05-01';
 
         function getTimeRemaining (endTime){
             const t = Date.parse(endTime) - Date.parse(new Date()),
@@ -201,13 +201,43 @@ window.addEventListener('DOMContentLoaded', () => {
             return await res.json();
         };
 
-        getResource('http://localhost:3000/menu')
+
+        axios.get('http://localhost:3000/menu')
             .then(data => {
-                data.forEach( ({img, altimg, title, descr, price}) => {
+                data.data.forEach( ({img, altimg, title, descr, price}) => {
                     new AddMenuForDay(img, altimg, title, descr, price, '.menu .container').addMenu();
 
                 });
             });
+
+        //====== if you need to create only once =========
+
+        // getResource('http://localhost:3000/menu')
+        //     .then(data => createCard(data));
+
+        // function createCard(data){
+        //     data.forEach( ({img, altimg, title, descr, price}) => {
+        //         const element = document.createElement('div');
+        //         element.classList.add('menu__item');
+
+        //         element.innerHTML = `
+        //         <div class="menu__item">
+        //             <img src="${img}" alt="${altimg}">
+        //             <h3 class="menu__item-subtitle">Меню “${title}”</h3>
+        //             <div class="menu__item-descr">${descr}</div>
+        //             <div class="menu__item-divider"></div>
+        //             <div class="menu__item-price">
+        //                 <div class="menu__item-cost">Цена:</div>
+        //                 <div class="menu__item-total"><span>${price}</span> $/день</div>
+        //             </div>
+        //         </div>
+        //         `;
+        //         document.querySelector('.menu .container').append(element);
+
+        //     });
+        // }
+        // ==================================================
+                
 
     
 
@@ -257,15 +287,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
                 postData('http://localhost:3000/requests', json)
-                .then(data => {
-                    console.log(data);
-                    statusMessage.remove();
-                    showThnxModal(message.succes);
-                }).catch(() => {
-                    showThnxModal(message.failure);
-                }).finally(() =>{
-                    form.reset();
-                });
+                    .then(data => {
+                        console.log(data);
+                        statusMessage.remove();
+                        showThnxModal(message.succes);
+                    })
+                    .catch(() => {
+                        showThnxModal(message.failure);
+                    })
+                    .finally(() =>{
+                        form.reset();
+                    });
 
             });
         }
@@ -294,6 +326,108 @@ window.addEventListener('DOMContentLoaded', () => {
 
         }
 
+
+        // Slider
+        class Slides {
+
+            constructor(alt,  img) {
+                this.alt = alt;
+                this.img = img;
+            }
+
+            addImg() {
+                const slideInner = document.querySelector('.offer__slider-inner');
+                slideInner.insertAdjacentHTML('beforeend', `
+                <div class="offer__slide">
+                    <img src="${this.img}" alt="${this.alt}">
+                </div>
+                `);
+            }
+        }
+
+        axios.get('http://localhost:3000/slide')
+        
+            .then(data => {
+                data.data.forEach(({id, alt, img}) => {
+                    new Slides(alt, img).addImg();
+                });
+
+                const total = document.getElementById('total');
+                if (data.data.length < 10){
+                    total.innerHTML = `0${data.data.length}`;
+                }else{
+                    total.innerHTML = `${data.data.length}`;
+                } 
+                console.log(data.data);
+            })
+            .then( () => {
+                const slides = document.querySelectorAll('.offer__slide'),
+                      slider = document.querySelectorAll('.offer__slider'),
+                      slideWrapper = document.querySelector('.offer__slider-wrapper'),
+                      current = document.querySelector('#current'),
+                      nextSlide = document.querySelector('.offer__slider-next'),
+                      prevSlide = document.querySelector('.offer__slider-prev'),
+                      sliderField = document.querySelector('.offer__slider-inner'),
+                      width = window.getComputedStyle(slideWrapper).width;
+
+                function currentSlide(){
+                    if(slideIndex < 9){
+                        current.innerHTML = `0${1+slideIndex}`;
+                    }else{
+                        current.innerHTML = `${1+slideIndex}`;
+                    }
+                }
+
+                let slideIndex = 0;
+                let offset = 0;
+        
+                sliderField.style.width = 100 * slides.length + "%";
+                sliderField.style.display = 'flex';
+                sliderField.style.transition = '0.5s all';
+        
+                slideWrapper.style.overflow = 'hidden';
+        
+        
+                slides.forEach(slide => {
+                    slide.style.width = width;
+                });
+
+        
+                nextSlide.addEventListener('click', () => {
+        
+                    if (offset == +width.slice(0, width.length -2) * (slides.length -1)){
+                        offset = 0;
+                        slideIndex = 0;
+                    }else{
+                        offset += +width.slice(0, width.length -2);
+                        ++slideIndex;
+        
+                    }
+                    currentSlide();
+        
+                    sliderField.style.transform = `translateX(-${offset}px)`;
+                });
+        
+                prevSlide.addEventListener('click', () => {
+        
+                    if (offset == 0){
+                        offset = +width.slice(0, width.length -2) * (slides.length -1);
+                        slideIndex = slides.length -1;
+                    }else{
+                        offset -= +width.slice(0, width.length -2);
+                        --slideIndex;
+        
+                    }
+                    currentSlide();
+        
+                    sliderField.style.transform = `translateX(-${offset}px)`;
+                });
+
+                
+            });
+
+            // slider end
+                
 
         
 });

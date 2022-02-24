@@ -61,5 +61,49 @@
       "phone": "+996999668869",
       "id": 8
     }
+  ],
+
+  "slide": [
+    {
+      "alt": "pepper",
+      "img": "img/slider/pepper.jpg"
+    },
+    {
+      "alt": "food",
+      "img": "img/slider/food-12.jpg"
+    },
+    {
+      "alt": "olive-oil",
+      "img": "img/slider/olive-oil.jpg"
+    },
+    {
+      "alt": "paprika",
+      "img": "img/slider/paprika.jpg"
+    },
+    {
+      "alt": "olive-oil",
+      "img": "img/slider/olive-oil.jpg"
+    },
+    {
+      "alt": "paprika",
+      "img": "img/slider/paprika.jpg"
+    },
+    {
+      "alt": "olive-oil",
+      "img": "img/slider/olive-oil.jpg"
+    },
+    {
+      "alt": "paprika",
+      "img": "img/slider/paprika.jpg"
+    },
+    {
+      "alt": "olive-oil",
+      "img": "img/slider/olive-oil.jpg"
+    },
+    {
+      "alt": "paprika",
+      "img": "img/slider/paprika.jpg"
+    }
+    
   ]
 }
