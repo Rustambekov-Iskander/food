@@ -391,22 +391,23 @@ window.addEventListener('DOMContentLoaded', () => {
                 slides.forEach(slide => {
                     slide.style.width = width;
                 });
+                const widthPx = +width.replace(/\D/g, '');
 
                 slider.style.position = 'relative';
                 const indicators = document.createElement('ol'),
                     dots = [];
                 indicators.classList.add('carousel-indicators');
                 indicators.style.cssText = `
-                position: absolute;
-                right: 0;
-                bottom: 0;
-                left: 0;
-                z-index: 15;
-                display: flex;
-                justify-content: center;
-                margin-right: 15%;
-                margin-left: 15%;
-                list-style: none;
+                    position: absolute;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    z-index: 15;
+                    display: flex;
+                    justify-content: center;
+                    margin-right: 15%;
+                    margin-left: 15%;
+                    list-style: none;
                 `;
                 slider.append(indicators);
 
@@ -434,64 +435,171 @@ window.addEventListener('DOMContentLoaded', () => {
                     indicators.append(dot);
                     dots.push(dot); 
                 }
+
+                function forDots(){
+                    dots.forEach(dot => dot.style.opacity = '0.5');
+                    dots[slideIndex - 1].style.opacity = '1';
+                    currentSlide();
+                    sliderField.style.transform = `translateX(-${offset}px)`;
+                }
         
                 nextSlide.addEventListener('click', () => {
         
-                    if (offset == +width.slice(0, width.length -2) * (slides.length -1)){
+                    if (offset == widthPx * (slides.length -1)){
                         offset = 0;
                         slideIndex = 0;
                     }else{
-                        offset += +width.slice(0, width.length -2);
+                        offset += widthPx;
                         ++slideIndex;
         
                     }
-                    dots.forEach(dot => dot.style.opacity = '0.5');
-                    dots[slideIndex].style.opacity = '1';
-                    currentSlide();
-        
-                    sliderField.style.transform = `translateX(-${offset}px)`;
+                    
+                    forDots();
                 });
         
                 prevSlide.addEventListener('click', () => {
         
                     if (offset == 0){
-                        offset = +width.slice(0, width.length -2) * (slides.length -1);
+                        offset = widthPx * (slides.length -1);
                         slideIndex = slides.length -1;
                     }else{
-                        offset -= +width.slice(0, width.length -2);
+                        offset -= widthPx;
                         --slideIndex;
         
                     }
-                    dots.forEach(dot => dot.style.opacity = '0.5');
-                    dots[slideIndex].style.opacity = '1';
-                    currentSlide();
+                    forDots();
 
-        
-                    sliderField.style.transform = `translateX(-${offset}px)`;
                 });
 
                 dots.forEach(dot => {
                     dot.addEventListener('click', e => {
                         const slideTo = e.target.getAttribute('data-slide-to');
                         slideIndex = slideTo;
-                        offset = +width.slice(0, width.length -2) * (slideTo -1);
-                        sliderField.style.transform = `translateX(-${offset}px)`;
+                        offset = widthPx * (slideTo -1);
 
-                        currentSlide();
-
-                        
-                        dots.forEach(dot => dot.style.opacity = '0.5');
-                        dots[slideIndex - 1].style.opacity = '1';
-            
+                        forDots();
 
                     });
                 });
 
                 
             });
-
             // slider end
                 
+            // calc
+            const genders = document.querySelectorAll('[data-gender]'),
+                  activity = document.querySelectorAll('[data-activity]'),
+                  height = document.querySelector('#height'),
+                  weight = document.querySelector('#weight'),
+                  age = document.querySelector('#age'),
+                  result = document.querySelector('.calculating__result span'),
+                  calculating = document.querySelector('.calculating .container');
+            
+            let activityResult = '',
+                genderResult = '',
+                weightContent = '',
+                heightContent = '',
+                ageContent = '';
+            
 
-        
+            function calculatingChoose(items, item){
+                items.forEach(item => {
+                    item.classList.remove('calculating__choose-item_active');
+                });
+
+                item.classList.add('calculating__choose-item_active');
+
+            }
+  
+
+            genders.forEach(gender => {
+                gender.addEventListener('click', () => {
+                    calculatingChoose(genders, gender);
+                    genders.forEach(gender => {
+                        if (gender.classList.contains('calculating__choose-item_active')){
+                            genderResult = (gender.getAttribute(`data-gender`));
+                        }
+                    });
+                });
+            });
+
+
+            activity.forEach(item => {
+                item.addEventListener('click', () => {
+                    calculatingChoose(activity, item);
+                    activity.forEach(item => {
+                        if (item.classList.contains('calculating__choose-item_active')){
+                            activityResult = (item.getAttribute(`data-activity`));
+                        }
+                    });
+                    
+                });
+            });
+            
+
+            
+            weight.addEventListener('keyup', () => {
+                let weightResult = weight.value;
+
+                if( +weightResult ){
+                    weightContent = weightResult;
+                }else{
+                    console.log('можно вводить только цифры');
+                }
+            });
+
+            height.addEventListener('keyup', () => {
+                let heightResult = height.value;
+                if( +heightResult ){
+                    heightContent = heightResult;
+                }else{
+                    console.log('можно вводить только цифры');
+                }
+            });
+            age.addEventListener('keyup', () => {
+                let ageResult = age.value;
+                if( +ageResult ){
+                    ageContent = ageResult;
+                }else{
+                    console.log('можно вводить только цифры');
+                }
+            });
+
+
+            calculating.addEventListener('click', () => {
+                    let bmr = 0;
+                    let act = 0;
+
+                    if(activityResult == 'low'){
+                        act = 1.2;
+                    }else if(activityResult == 'small'){
+                        act = 1.375;
+                    }else if (activityResult == 'medium'){
+                        act = 1.55;
+                    }else if (activityResult == 'high'){
+                        act = 1.725;
+                    }
+
+                    if(genderResult == 'woman'){
+                        bmr = 447.6 + (9.2 * weightContent) + (3.1 * heightContent) + (4.3 * ageContent);
+                        
+                    }else if (genderResult == 'man'){
+                        bmr = 88.36 + (13.4 * weightContent) + (4.8 * heightContent) + (5.7 * ageContent);
+                    }
+
+                    console.log(genderResult + activityResult);
+                    console.log(weightContent + heightContent + ageContent);
+
+                    bmr *= act;
+
+                    result.innerHTML = `${Math.floor(bmr)}`;
+                    
+
+
+                });
+            
+            // calc end
+
+
+
 });
