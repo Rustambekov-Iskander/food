@@ -155,19 +155,19 @@
                     Ваша конституция
                 </div>
                 <div class="calculating__choose calculating__choose_medium">
-                    <input type="text" id="height" placeholder="Введите рост в 'см'" class="calculating__choose-item">
-                    <input type="text" id="weight" placeholder="Введите вес в 'кг'"  class="calculating__choose-item">
-                    <input type="text" id="age" placeholder="Введите возраст" class="calculating__choose-item">
+                    <input onkeypress="if(this.value.length&gt;2) return false;" type="number" id="height" placeholder="Введите рост в см" class="calculating__choose-item">
+                    <input onkeypress="if(this.value.length&gt;2) return false;" type="number" id="weight" placeholder="Введите вес в кг"  class="calculating__choose-item">
+                    <input onkeypress="if(this.value.length&gt;2) return false;" type="number" id="age" placeholder="Введите возраст" class="calculating__choose-item">
                 </div>
 
                 <div class="calculating__subtitle">
                     Выберите вашу физическая активность
                 </div>
                 <div id="activity" class="calculating__choose calculating__choose_big">
-                    <div data-activity="low" class="calculating__choose-item">Низкая активность </div>
-                    <div data-activity="small"  class="calculating__choose-item">Невысокая активность</div>
-                    <div data-activity="medium" class="calculating__choose-item">Умеренная активность</div>
-                    <div data-activity="high" class="calculating__choose-item">Высокая активность</div>
+                    <div data-activity="1.2" class="calculating__choose-item">Низкая активность </div>
+                    <div data-activity="1.375"  class="calculating__choose-item">Невысокая активность</div>
+                    <div data-activity="1.55" class="calculating__choose-item">Умеренная активность</div>
+                    <div data-activity="1.725" class="calculating__choose-item">Высокая активность</div>
                 </div>
 
                 <div class="calculating__divider"></div>
@@ -177,7 +177,7 @@
                         Ваша суточная норма калорий:
                     </div>
                     <div class="calculating__result">
-                        <span>2700</span> ккал
+                        <span>0</span> ккал <h3 style="cursor: pointer;">(Рассчитать)</h3>
                     </div>
                 </div>
             </div>
