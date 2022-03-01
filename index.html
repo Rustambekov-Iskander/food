@@ -147,27 +147,27 @@
                 </div>
                 <!-- calculating__choose-item_active -->
                 <div class="calculating__choose" id="gender">
-                    <div data-gender="woman" class="calculating__choose-item">Женщина</div>
-                    <div data-gender="man" class="calculating__choose-item">Мужчина</div>
+                    <div data-gen="data-gen" data-gender="woman" class="calculating__choose-item">Женщина</div>
+                    <div data-gen="data-gen" data-gender="man" class="calculating__choose-item">Мужчина</div>
                 </div>
 
                 <div class="calculating__subtitle">
                     Ваша конституция
                 </div>
                 <div class="calculating__choose calculating__choose_medium">
-                    <input onkeypress="if(this.value.length&gt;2) return false;" type="number" id="height" placeholder="Введите рост в см" class="calculating__choose-item">
-                    <input onkeypress="if(this.value.length&gt;2) return false;" type="number" id="weight" placeholder="Введите вес в кг"  class="calculating__choose-item">
-                    <input onkeypress="if(this.value.length&gt;2) return false;" type="number" id="age" placeholder="Введите возраст" class="calculating__choose-item">
+                    <input type="text" maxlength="3" id="height" placeholder="Введите рост в см" class="calculating__choose-item">
+                    <input type="text" maxlength="3" id="weight" placeholder="Введите вес в кг"  class="calculating__choose-item">
+                    <input type="text" maxlength="3" id="age" placeholder="Введите возраст" class="calculating__choose-item">
                 </div>
 
                 <div class="calculating__subtitle">
                     Выберите вашу физическая активность
                 </div>
                 <div id="activity" class="calculating__choose calculating__choose_big">
-                    <div data-activity="1.2" class="calculating__choose-item">Низкая активность </div>
-                    <div data-activity="1.375"  class="calculating__choose-item">Невысокая активность</div>
-                    <div data-activity="1.55" class="calculating__choose-item">Умеренная активность</div>
-                    <div data-activity="1.725" class="calculating__choose-item">Высокая активность</div>
+                    <div data-act="data-act" data-activity="1.2" class="calculating__choose-item">Низкая активность </div>
+                    <div data-act="data-act" data-activity="1.375"  class="calculating__choose-item">Невысокая активность</div>
+                    <div data-act="data-act" data-activity="1.55" class="calculating__choose-item">Умеренная активность</div>
+                    <div data-act="data-act" data-activity="1.725" class="calculating__choose-item">Высокая активность</div>
                 </div>
 
                 <div class="calculating__divider"></div>
@@ -177,7 +177,7 @@
                         Ваша суточная норма калорий:
                     </div>
                     <div class="calculating__result">
-                        <span>0</span> ккал <h3 style="cursor: pointer;">(Рассчитать)</h3>
+                        <span>0</span> ккал
                     </div>
                 </div>
             </div>

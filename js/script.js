@@ -156,7 +156,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // modal end
 
-    
+
     // classes for menu
     class AddMenuForDay {
 
@@ -207,9 +207,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 descr,
                 price
             }) => {
-                new AddMenuForDay(img, 
+                new AddMenuForDay(img,
                     altimg, title,
-                    descr, price, 
+                    descr, price,
                     '.menu .container').addMenu();
 
             });
@@ -233,7 +233,8 @@ window.addEventListener('DOMContentLoaded', () => {
     //             <div class="menu__item-divider"></div>
     //             <div class="menu__item-price">
     //                 <div class="menu__item-cost">Цена:</div>
-    //                 <div class="menu__item-total"><span>${price}</span> $/день</div>
+    //                 <div class="menu__item-total"><span>${price}</span>
+    //  $/день</div>
     //             </div>
     //         </div>
     //         `;
@@ -246,9 +247,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-    // end classes for menu
+    // end classes for menu=============================================
 
-    // forms with db
+
+
+    // forms with db=============================================
     const forms = document.querySelectorAll('form');
 
     const message = {
@@ -330,9 +333,10 @@ window.addEventListener('DOMContentLoaded', () => {
         }, 3000);
 
     }
+    // forms with db======================================
 
 
-    // Slider
+    // Slider=============================================
     class Slides {
 
         constructor(alt, img) {
@@ -354,7 +358,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
         .then(data => {
             data.data.forEach(({
-                id,
                 alt,
                 img
             }) => {
@@ -380,10 +383,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 width = window.getComputedStyle(slideWrapper).width;
 
             function currentSlide() {
-                if (slideIndex < 10) {
-                    current.textContent = `0${slideIndex}`;
+                if (slideIndex + 1 < 10) {
+                    current.textContent = `0${slideIndex + 1}`;
                 } else {
-                    current.textContent = `${slideIndex}`;
+                    current.textContent = `${slideIndex + 1}`;
                 }
             }
 
@@ -447,9 +450,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
             function forDots() {
                 dots.forEach(dot => dot.style.opacity = '0.5');
-                dots[slideIndex - 1].style.opacity = '1';
+                dots[slideIndex].style.opacity = '1';
                 currentSlide();
-                sliderField.style.transform = `translateX(-${offset}px)`;
             }
 
             nextSlide.addEventListener('click', () => {
@@ -464,6 +466,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
 
                 forDots();
+                sliderField.style.transform = `translateX(-${offset}px)`;
             });
 
             prevSlide.addEventListener('click', () => {
@@ -477,94 +480,120 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 }
                 forDots();
-
+                sliderField.style.transform = `translateX(-${offset}px)`;
             });
 
             dots.forEach(dot => {
                 dot.addEventListener('click', e => {
                     const slideTo = e.target.getAttribute('data-slide-to');
-                    slideIndex = slideTo;
+                    slideIndex = slideTo - 1;
                     offset = widthPx * (slideTo - 1);
-
                     forDots();
+                    sliderField.style.transform = `translateX(-${offset}px)`;
 
                 });
             });
 
 
         });
-    // slider end
+    // slider end=============================================
 
-    // calc
+
+
+    // calc===================================================
     const genders = document.querySelectorAll('[data-gender]'),
         activity = document.querySelectorAll('[data-activity]'),
-        height = document.querySelector('#height'),
-        weight = document.querySelector('#weight'),
-        age = document.querySelector('#age'),
         result = document.querySelector('.calculating__result span'),
-        resultIfstring = document.querySelector('.calculating__result'),
+        allItem = document.querySelectorAll('.calculating__choose-item'),
         calculating = document.querySelector('.calculating .container');
 
     let activityResult, genderResult, weightResult, heightResult, ageResult;
 
 
-    function calculatingChoose(items, item) {
+    function calculatingChoose(items, data) {
         items.forEach(item => {
-            item.classList.remove('calculating__choose-item_active');
+            item.addEventListener('click', () => {
+                items.forEach(item => {
+                    item.classList.remove('calculating__choose-item_active');
+                });
+                item.classList.add('calculating__choose-item_active');
+                if (item.classList.contains('calculating__choose-item_active')){
+
+                    switch (item.getAttribute(`${data}`)){
+                        case 'data-gen':
+                            genderResult = item.getAttribute(`data-gender`);
+                            break;
+                        case "data-act":
+                            activityResult = item.getAttribute(`data-activity`);
+                            break;
+                    }
+
+                }
+            });
+
         });
-        item.classList.add('calculating__choose-item_active');
     }
 
-    genders.forEach(gender => {
-        gender.addEventListener('click', () => {
-            calculatingChoose(genders, gender);
-            if (gender.classList.contains('calculating__choose-item_active')) {
-                genderResult = (gender.getAttribute(`data-gender`));
+    function getDynamicInformation(selector){
+        const input = document.querySelector(selector);
+
+        input.addEventListener('input', () => {
+
+            if(input.value.match(/\D/g)){
+                input.style.border = '1px solid red';
+            }else{
+                input.style.border = 'none';
+            }
+
+            switch(input.getAttribute('id')){
+                case 'height':
+                    heightResult = +input.value;
+                    break;
+                case 'weight':
+                    weightResult = +input.value;
+                    break;
+                case 'age':
+                    ageResult = +input.value;
+                    break;   
             }
         });
-    });
+    }
 
-
-    activity.forEach(item => {
-        item.addEventListener('click', () => {
-            calculatingChoose(activity, item);
-            if (item.classList.contains('calculating__choose-item_active')) {
-                activityResult = (item.getAttribute(`data-activity`));
-            }
-        });
-    });
-
-
-
-    weight.addEventListener('keyup', () => {
-        weightResult = weight.value;
-    });
-
-    height.addEventListener('keyup', () => {
-        heightResult = height.value;
-    });
-
-    age.addEventListener('keyup', () => {
-        ageResult = age.value;
-    });
-
-
-    calculating.addEventListener('click', () => {
+    function calc(){
         let bmr = 0;
-        if (weightResult && heightResult && ageResult && activityResult && genderResult) {
+        if (weightResult && heightResult && ageResult && activityResult &&
+            genderResult) {
             if (genderResult == 'woman') {
-                bmr = 447.6 + (9.2 * weightResult) + (3.1 * heightResult) + (4.3 * ageResult);
+                bmr = 447.6 + (9.2 * weightResult) +
+                    (3.1 * heightResult) + (4.3 * ageResult);
 
             } else if (genderResult == 'man') {
-                bmr = 88.36 + (13.4 * weightResult) + (4.8 * heightResult) + (5.7 * ageResult);
+                bmr = 88.36 + (13.4 * weightResult) +
+                    (4.8 * heightResult) + (5.7 * ageResult);
             }
 
             bmr *= activityResult;
             result.innerHTML = `${Math.floor(bmr)}`;
+
         }
+    }
+
+    calculatingChoose(genders, 'data-gen');
+    calculatingChoose(activity, 'data-act');
+
+    getDynamicInformation('#height');
+    getDynamicInformation('#weight');
+    getDynamicInformation('#age');
+
+    calculating.addEventListener('click', () => {
+        calc();
     });
+    allItem.forEach(item => {
+        item.addEventListener('input', () => {
+            calc();
+        });
+    });
+
     // calc end
-
-
 
 });
